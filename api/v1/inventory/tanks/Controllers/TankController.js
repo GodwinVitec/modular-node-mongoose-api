@@ -1,12 +1,15 @@
 const BaseController = require('../../../BaseController');
 const TankService = require('../Services/TankService');
 const TankTransformer = require('../Transformers/TankTransformer');
+const Commons = require('../../../../helpers/commons');
 
 class TankController extends BaseController{
   constructor() {
     super();
+
     this.tankService = new TankService();
     this.tankTransformer = new TankTransformer();
+    this.commonHelper = new Commons();
   }
 
   index = async (req, res) => {
@@ -15,7 +18,7 @@ class TankController extends BaseController{
     if (tanks.status !== true) {
       return this.fail(
         res,
-        tanks.error,
+        tanks.errors,
         tanks.trace
       );
     }
@@ -35,7 +38,7 @@ class TankController extends BaseController{
     if (tank.status !== true) {
       return this.fail(
         res,
-        tank.error,
+        tank.errors,
         tank.trace
       );
     }
@@ -45,6 +48,87 @@ class TankController extends BaseController{
       'Tank added successfully',
       this.tankTransformer.transform(tank.data)
     );
+  }
+
+  updateTank = async (req, res) => {
+    try {
+      const {id} = req.params;
+
+      if (this.commonHelper.empty(id))
+      {
+        return this.fail(
+          res,
+          "Please specify the ID of the tank",
+        );
+      }
+
+      const updateResponse = await this.tankService.updateTank(
+        id,
+        {...req.body}
+      );
+
+      if (updateResponse.status !== true) {
+        return this.fail(
+          res,
+          updateResponse.errors,
+          updateResponse.trace
+        );
+      }
+
+      if (this.commonHelper.empty(updateResponse?.data?.id)) {
+        return this.fail(
+          res,
+          "Failed  to update tank. Tank not found."
+        );
+      }
+
+      return this.success(
+        res,
+        updateResponse.message,
+        this.tankTransformer.transform(updateResponse.data)
+      );
+    } catch (error) {
+      return this.fail(
+        res,
+        error.message,
+        error
+      );
+    }
+  }
+
+  destroyTank = async (req, res) => {
+    try {
+      const {id} = req.params;
+
+      if (this.commonHelper.empty(id))
+      {
+        return this.fail(
+          res,
+          "Please specify the ID of the tank",
+        );
+      }
+
+      const destroyResponse = await this.tankService.destroyTank(id);
+
+      if (destroyResponse.status !== true) {
+        return this.fail(
+          res,
+          destroyResponse.errors,
+          destroyResponse.trace
+        );
+      }
+
+      return this.success(
+        res,
+        destroyResponse.message
+      );
+    } catch (error) {
+      return this.fail(
+        res,
+        error.message,
+        error
+      );
+    }
   }
 }
 

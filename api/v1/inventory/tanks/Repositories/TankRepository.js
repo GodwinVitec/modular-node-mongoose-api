@@ -13,6 +13,53 @@ class TankRepository {
     return await this.model.create(tankData);
   }
 
+  async update(
+    filter = {},
+    update = {},
+    options = {},
+    isMany = false
+  ) {
+    if (this.commonHelper.empty(filter)) {
+      throw new Error("The filter parameter is required.");
+    }
+
+    if(this.commonHelper.empty(update)) {
+      throw new Error("The update parameter is required.");
+    }
+
+    if (!isMany) {
+      return this.model.findOneAndUpdate(
+        {...filter},
+        {...update},
+        {...options}
+      );
+    }
+
+    return this.model.updateMany(
+      {...filter},
+      {...update},
+      {...options}
+    );
+  }
+
+
+  async destroy(
+    filter = {},
+    isMany = false
+  ) {
+    if (this.commonHelper.empty(filter)) {
+      throw new Error("The filter parameter is required.");
+    }
+
+    if(!isMany) {
+      return this.model.findOneAndDelete(
+        {...filter}
+      );
+    }
+
+    return this.model.deleteMany({...filter});
+  }
+
   async getTanks(filter = {}) {
     let pipeline = [
       {
@@ -34,12 +81,6 @@ class TankRepository {
       .then((data) => {
         return data.map(tank => (new TankTransformer).transform(tank));
       });
-  }
-
-  async getLongestToShortestTanks(filter = {}) {
-    return await this.model.find(filter)
-      .sort({length: -1})
-      .exec();
   }
 
   async getTanksDescendingLength(filter = {}) {

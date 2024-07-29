@@ -8,7 +8,7 @@ class BaseController {
   }
 
   fail(res, message, trace = null) {
-    res.send({
+    res.status(500).send({
       status: false,
       error: message,
       trace
