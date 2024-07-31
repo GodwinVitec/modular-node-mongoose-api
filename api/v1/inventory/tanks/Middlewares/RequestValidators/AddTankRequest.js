@@ -22,4 +22,4 @@ class AddTankRequest extends BaseValidator {
 }
 
 
-module.exports = (new AddTankRequest()).validate;
+module.exports = AddTankRequest;
