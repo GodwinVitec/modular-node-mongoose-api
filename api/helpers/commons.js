@@ -21,10 +21,14 @@ class Commons {
    * @param validator
    * @return {Object}
    */
-  validated(request, validator) {
+  validated = (request, validator) => {
     const _validated = {};
 
     for (const key of Object.keys(validator.rules())) {
+      if(this.empty(request.body[key])) {
+        continue;
+      }
+
       _validated[key] = request.body[key];
     }
 
