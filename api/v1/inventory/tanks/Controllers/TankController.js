@@ -63,9 +63,12 @@ class TankController extends BaseController{
         );
       }
 
+      const validated = req.validated;
+      console.log(validated);
+
       const updateResponse = await this.tankService.updateTank(
         id,
-        {...req.body}
+        {...validated}
       );
 
       if (updateResponse.status !== true) {
