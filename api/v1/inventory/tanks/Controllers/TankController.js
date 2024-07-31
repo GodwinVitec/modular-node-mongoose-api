@@ -31,9 +31,10 @@ class TankController extends BaseController{
   };
 
   addTank = async (req, res) => {
-    const tank = await this.tankService.addTank(req.body);
+    const validated = req.validated;
 
-    console.log(req.body);
+    console.log(validated);
+    const tank = await this.tankService.addTank(validated);
 
     if (tank.status !== true) {
       return this.fail(

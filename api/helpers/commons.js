@@ -14,6 +14,22 @@ class Commons {
       (Array.isArray(value) && !value.length) ||
       (Object.prototype.isPrototypeOf(value) && !Object.keys(value).length);
   }
+
+  /**
+   * Get the fields of the request body that have been validated
+   * @param request
+   * @param validator
+   * @return {Object}
+   */
+  validated(request, validator) {
+    const _validated = {};
+
+    for (const key of Object.keys(validator.rules())) {
+      _validated[key] = request.body[key];
+    }
+
+    return _validated;
+  }
 }
 
 module.exports = Commons;

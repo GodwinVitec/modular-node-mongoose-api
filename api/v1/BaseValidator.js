@@ -1,4 +1,5 @@
 const Validator = require("validatorjs");
+const Commons = require("../helpers/commons");
 
 class BaseValidator {
   validator(body, rules, customMessages, callback) {
@@ -40,6 +41,11 @@ class BaseValidator {
         if (!status) {
           return this.validationError(res, err);
         } else {
+
+          req.validated = (new Commons()).validated(
+            req,
+            this
+          );
           return next();
         }
       }
