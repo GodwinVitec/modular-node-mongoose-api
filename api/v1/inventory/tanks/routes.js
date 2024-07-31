@@ -7,7 +7,7 @@ const TankController = require('./Controllers/TankController');
 const AddTankRequest = require('./Middlewares/RequestValidators/AddTankRequest');
 
 // Request Validators
-const addTankRequestValidator = (new AddTankRequest()).validate;
+// const addTankRequestValidator = (new AddTankRequest()).validate;
 const UpdateTankRequest = require('./Middlewares/RequestValidators/UpdateTankRequest');
 
 
@@ -16,7 +16,7 @@ const tankHandler = new TankController();
 
 // Routes
 router.get('', tankHandler.index);
-router.post('', addTankRequestValidator, tankHandler.addTank);
+router.post('', AddTankRequest, tankHandler.addTank);
 router.put('/:id', UpdateTankRequest, tankHandler.updateTank);
 router.delete('/:id', tankHandler.destroyTank);
 
